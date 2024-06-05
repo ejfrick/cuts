@@ -3,6 +3,7 @@ package cuts
 
 import (
 	"cmp"
+	"golang.org/x/exp/maps"
 	"slices"
 )
 
@@ -16,6 +17,21 @@ func Dedupe[T comparable](in []T) []T {
 	}
 
 	return l
+}
+
+// DedupeFunc removes duplicate values from an array of elements of type T,
+// from which a comparable type E can be derived using the provided function.
+func DedupeFunc[T any, E comparable](in []T, cmp func(t T) E) []T {
+	m := make(map[E]T)
+	for _, elem := range in {
+		key := cmp(elem)
+		_, exists := m[key]
+		if !exists {
+			m[key] = elem
+		}
+	}
+
+	return maps.Values(m)
 }
 
 // ChunkBy groups an array of items into batches of the given size.

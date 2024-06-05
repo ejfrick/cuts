@@ -222,3 +222,30 @@ func TestAllWhere(t *testing.T) {
 		})
 	}
 }
+
+func TestDedupeFunc(t *testing.T) {
+	elems := []struct {
+		Name string
+	}{
+		{
+			Name: "first",
+		},
+		{
+			Name: "second",
+		},
+		{
+			Name: "third",
+		},
+		{
+			Name: "third",
+		},
+	}
+
+	dedupeFunc := func(in struct{ Name string }) string {
+		return in.Name
+	}
+
+	expectedLen := 3
+	out := DedupeFunc(elems, dedupeFunc)
+	assert.Equal(t, expectedLen, len(out))
+}
