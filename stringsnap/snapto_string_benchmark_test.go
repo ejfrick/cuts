@@ -1,4 +1,4 @@
-package cuts
+package stringsnap
 
 import (
 	"fmt"

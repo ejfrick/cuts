@@ -1,4 +1,4 @@
-package cuts
+package stringsnap
 
 import (
 	"github.com/junegunn/fzf/src/algo"
