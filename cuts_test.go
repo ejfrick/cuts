@@ -259,6 +259,7 @@ func TestDedupe(t *testing.T) {
 		},
 	}
 	for _, tc := range tt {
+		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
 			t.Parallel()
 			var actual []string
@@ -330,6 +331,7 @@ func TestDedupeFunc(t *testing.T) {
 	}
 
 	for _, tc := range tt {
+		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
 			t.Parallel()
 			var actual []struct{ Key string }
