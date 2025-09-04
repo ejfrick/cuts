@@ -1,9 +1,9 @@
 package stringsnap
 
 import (
-	"github.com/ejfrick/cuts"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type testConst string
@@ -26,43 +26,43 @@ func TestSnapToStr(t *testing.T) {
 	t.Run("string", func(t *testing.T) {
 		t.Parallel()
 		tt := []struct {
-			name     cuts.snapToCase
+			name     string
 			input    []string
 			target   string
 			expected string
 		}{
 			{
-				name:     cuts.snapToPrev,
+				name:     "snapToPrev",
 				input:    []string{"hello", "joyfully", "kindergarten"},
 				target:   "hellos",
 				expected: "hello",
 			},
 			{
-				name:     cuts.snapToNext,
+				name:     "snapToNext",
 				input:    []string{"hell", "hellos", "joyfully"},
 				target:   "helloa",
 				expected: "hellos",
 			},
 			{
-				name:     cuts.equidistant,
+				name:     "equidistant",
 				input:    []string{"helloa", "helloc", "joyfully"},
 				target:   "hellob",
 				expected: "helloc",
 			},
 			{
-				name:     cuts.containsTarget,
+				name:     "containsTarget",
 				input:    []string{"hello", "joyfully", "kindergarten"},
 				target:   "joyfully",
 				expected: "joyfully",
 			},
 			{
-				name:     cuts.snapToLast,
+				name:     "snapToLast",
 				input:    []string{"hello", "joyfully", "kindergarten"},
 				target:   "limitations",
 				expected: "kindergarten",
 			},
 			{
-				name:     cuts.snapToFirst,
+				name:     "snapToFirst",
 				input:    []string{"hello", "joyfully", "kindergarten"},
 				target:   "goodbye",
 				expected: "hello",
@@ -81,43 +81,43 @@ func TestSnapToStr(t *testing.T) {
 	t.Run("const", func(t *testing.T) {
 		t.Parallel()
 		tt := []struct {
-			name     cuts.snapToCase
+			name     string
 			input    []testConst
 			target   testConst
 			expected testConst
 		}{
 			{
-				name:     cuts.snapToPrev,
+				name:     "snapToPrev",
 				input:    []testConst{testHello, testJoyfully, testKindergarten},
 				target:   testHellos,
 				expected: testHello,
 			},
 			{
-				name:     cuts.snapToNext,
+				name:     "snapToNext",
 				input:    []testConst{testHell, testHellos, testJoyfully},
 				target:   testHelloa,
 				expected: testHellos,
 			},
 			{
-				name:     cuts.equidistant,
+				name:     "equidistant",
 				input:    []testConst{testHelloa, testHelloc, testJoyfully},
 				target:   testHellob,
 				expected: testHelloc,
 			},
 			{
-				name:     cuts.containsTarget,
+				name:     "containsTarget",
 				input:    []testConst{testHello, testJoyfully, testKindergarten},
 				target:   testJoyfully,
 				expected: testJoyfully,
 			},
 			{
-				name:     cuts.snapToLast,
+				name:     "snapToLast",
 				input:    []testConst{testHello, testJoyfully, testKindergarten},
 				target:   testLong,
 				expected: testKindergarten,
 			},
 			{
-				name:     cuts.snapToFirst,
+				name:     "snapToFirst",
 				input:    []testConst{testHello, testJoyfully, testKindergarten},
 				target:   testGoodbye,
 				expected: testHello,
@@ -126,7 +126,7 @@ func TestSnapToStr(t *testing.T) {
 
 		for _, tc := range tt {
 			tc := tc
-			t.Run(string(tc.name), func(t *testing.T) {
+			t.Run(tc.name, func(t *testing.T) {
 				t.Parallel()
 				actual := SnapToStr(tc.input, tc.target)
 				assert.Equal(t, tc.expected, actual)

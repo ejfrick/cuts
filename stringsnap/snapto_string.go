@@ -1,11 +1,12 @@
 package stringsnap
 
 import (
+	"slices"
+
 	"github.com/junegunn/fzf/src/algo"
 	"github.com/junegunn/fzf/src/util"
 	"github.com/lithammer/fuzzysearch/fuzzy"
 	"github.com/schollz/closestmatch"
-	"slices"
 )
 
 // SnapToStr returns the closest element in a string array

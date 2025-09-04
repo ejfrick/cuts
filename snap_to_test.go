@@ -1,9 +1,10 @@
 package cuts
 
 import (
-	"github.com/stretchr/testify/suite"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/suite"
 )
 
 type snapToCase string

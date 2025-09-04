@@ -2,14 +2,18 @@
 package cuts
 
 import (
-	"cmp"
-	"golang.org/x/exp/maps"
 	"slices"
+
+	"golang.org/x/exp/maps"
 )
 
 // Dedupe removes duplicate values from an array of comparable elements.
+// It preserves the order of the original array.
 func Dedupe[T comparable](in []T) []T {
-	var l []T
+	if len(in) == 0 {
+		return in
+	}
+	l := make([]T, 0, len(in))
 	for _, elem := range in {
 		if !slices.Contains(l, elem) {
 			l = append(l, elem)
@@ -21,7 +25,11 @@ func Dedupe[T comparable](in []T) []T {
 
 // DedupeFunc removes duplicate values from an array of elements of type T,
 // from which a comparable type E can be derived using the provided function.
+// It does not preserve the order of the original array.
 func DedupeFunc[T any, E comparable](in []T, cmp func(t T) E) []T {
+	if len(in) == 0 {
+		return in
+	}
 	m := make(map[E]T)
 	for _, elem := range in {
 		key := cmp(elem)
@@ -48,28 +56,13 @@ func ChunkBy[T any](items []T, chunkSize int) (chunks [][]T) {
 // it also returns a bool saying whether an element matching the
 // condition was found in the slice.
 // The slice must be sorted in increasing order.
-func FirstWhere[S ~[]E, E cmp.Ordered](vals S, where func(val E) bool) (int, bool) {
-	ind := len(vals)
-	found := false
-
-	n := len(vals)
-	i, j := 0, n
-	for i < j {
-		h := int(uint(i+j) >> 1)
-		if where(vals[h]) && h < ind {
-			ind = h
-			found = true
-			i = h + 1
-		} else {
-			j = h
+func FirstWhere[S ~[]E, E any](vals S, where func(val E) bool) (int, bool) {
+	for i, val := range vals {
+		if where(val) {
+			return i, true
 		}
 	}
-
-	if !found {
-		return -1, found
-	}
-
-	return ind, found
+	return -1, false
 }
 
 // LastWhere searches for the last element in a sorted slice
@@ -78,34 +71,20 @@ func FirstWhere[S ~[]E, E cmp.Ordered](vals S, where func(val E) bool) (int, boo
 // it also returns a bool saying whether an element matching the
 // condition was found in the slice.
 // The slice must be sorted in increasing order.
-func LastWhere[S ~[]E, E cmp.Ordered](vals S, where func(val E) bool) (int, bool) {
-	ind := 0
-	found := false
-	n := len(vals)
-	i, j := 0, n
-	for i < j {
-		h := int(uint(i+j) >> 1)
-		if where(vals[h]) && h > ind {
-			ind = h
-			found = true
-			i = h + 1
-		} else {
-			j = h
+func LastWhere[S ~[]E, E any](vals S, where func(val E) bool) (int, bool) {
+	for i := len(vals) - 1; i >= 0; i-- {
+		elem := vals[i]
+		if where(elem) {
+			return i, true
 		}
 	}
-
-	if !found {
-		return -1, found
-	}
-
-	return ind, found
+	return -1, false
 }
 
 // AnyWhere returns whether any element in the slice
 // satisfies the condition function.
 func AnyWhere[S ~[]E, E any](vals S, where func(val E) bool) bool {
 	found := false
-
 	for _, val := range vals {
 		if where(val) {
 			found = true
@@ -120,7 +99,6 @@ func AnyWhere[S ~[]E, E any](vals S, where func(val E) bool) bool {
 // satisfy the condition function.
 func AllWhere[S ~[]E, E any](vals S, where func(val E) bool) bool {
 	found := true
-
 	for _, val := range vals {
 		if !where(val) {
 			found = false

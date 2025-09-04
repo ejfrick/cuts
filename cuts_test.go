@@ -1,8 +1,10 @@
 package cuts
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFirstWhere(t *testing.T) {
@@ -47,8 +49,8 @@ func TestFirstWhere(t *testing.T) {
 			whereFunc: func(val int) bool {
 				return val%2 == 0
 			},
-			input:         []int{0, 1, 2, 3, 4},
-			expectedIndex: 2,
+			input:         []int{1, 2, 3, 4},
+			expectedIndex: 1,
 			expectedFound: true,
 		},
 	}
@@ -223,29 +225,118 @@ func TestAllWhere(t *testing.T) {
 	}
 }
 
-func TestDedupeFunc(t *testing.T) {
-	elems := []struct {
-		Name string
+func TestDedupe(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		Name     string
+		Input    []string
+		Expected []string
 	}{
 		{
-			Name: "first",
+			Name:     "empty",
+			Input:    []string{},
+			Expected: []string{},
 		},
 		{
-			Name: "second",
+			Name:     "nil",
+			Input:    nil,
+			Expected: nil,
 		},
 		{
-			Name: "third",
+			Name:     "single element",
+			Input:    []string{"a"},
+			Expected: []string{"a"},
 		},
 		{
-			Name: "third",
+			Name:     "no duplicates",
+			Input:    []string{"a", "b", "c"},
+			Expected: []string{"a", "b", "c"},
+		},
+		{
+			Name:     "duplicates",
+			Input:    []string{"a", "b", "c", "b"},
+			Expected: []string{"a", "b", "c"},
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+			var actual []string
+			require.NotPanics(t, func() {
+				actual = Dedupe(tc.Input)
+			})
+			assert.Equal(t, tc.Expected, actual)
+		})
+	}
+}
+
+func TestDedupeFunc(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		Name     string
+		Input    []struct{ Key string }
+		Expected []struct{ Key string }
+	}{
+		{
+			Name:     "empty",
+			Input:    []struct{ Key string }{},
+			Expected: []struct{ Key string }{},
+		},
+		{
+			Name:     "nil",
+			Input:    nil,
+			Expected: nil,
+		},
+		{
+			Name: "single element",
+			Input: []struct{ Key string }{
+				{Key: "a"},
+			},
+			Expected: []struct{ Key string }{
+				{Key: "a"},
+			},
+		},
+		{
+			Name: "no duplicates",
+			Input: []struct{ Key string }{
+				{Key: "a"},
+				{Key: "b"},
+				{Key: "c"},
+			},
+			Expected: []struct{ Key string }{
+				{Key: "a"},
+				{Key: "b"},
+				{Key: "c"},
+			},
+		},
+		{
+			Name: "duplicates",
+			Input: []struct{ Key string }{
+				{Key: "a"},
+				{Key: "b"},
+				{Key: "c"},
+				{Key: "a"},
+			},
+			Expected: []struct{ Key string }{
+				{Key: "a"},
+				{Key: "b"},
+				{Key: "c"},
+			},
 		},
 	}
 
-	dedupeFunc := func(in struct{ Name string }) string {
-		return in.Name
+	dedupeFunc := func(in struct{ Key string }) string {
+		return in.Key
 	}
 
-	expectedLen := 3
-	out := DedupeFunc(elems, dedupeFunc)
-	assert.Equal(t, expectedLen, len(out))
+	for _, tc := range tt {
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+			var actual []struct{ Key string }
+			require.NotPanics(t, func() {
+				actual = DedupeFunc(tc.Input, dedupeFunc)
+			})
+			assert.ElementsMatch(t, tc.Expected, actual)
+		})
+	}
 }

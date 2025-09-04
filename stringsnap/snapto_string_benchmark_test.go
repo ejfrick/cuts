@@ -2,8 +2,9 @@ package stringsnap
 
 import (
 	"fmt"
-	"github.com/tjarratt/babble"
 	"testing"
+
+	"github.com/tjarratt/babble"
 )
 
 func createWordList(max int) []string {
