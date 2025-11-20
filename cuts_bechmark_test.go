@@ -103,3 +103,19 @@ func BenchmarkAllWhere(b *testing.B) {
 		})
 	}
 }
+
+func BenchmarkChunkBy(b *testing.B) {
+	sliceSizes := []int{10, 100, 1000, 10_000}
+	chunkSizes := []int{0, 1, 5, 10, 100}
+	for _, sliceSize := range sliceSizes {
+		for _, chunkSize := range chunkSizes {
+			b.Run(fmt.Sprintf("sliceSize=%d,chunkSize=%d", sliceSize, chunkSize), func(b *testing.B) {
+				sliceInput := createIntSlice(sliceSize)
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					_ = ChunkBy(sliceInput, chunkSize)
+				}
+			})
+		}
+	}
+}

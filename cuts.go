@@ -44,7 +44,7 @@ func DedupeFunc[T any, E comparable](in []T, cmp func(t T) E) []T {
 
 // ChunkBy groups an array of items into batches of the given size.
 func ChunkBy[T any](items []T, chunkSize int) (chunks [][]T) {
-	for chunkSize < len(items) {
+	for chunkSize > 0 && chunkSize < len(items) {
 		items, chunks = items[chunkSize:], append(chunks, items[0:chunkSize:chunkSize])
 	}
 	return append(chunks, items)

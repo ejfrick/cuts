@@ -342,3 +342,73 @@ func TestDedupeFunc(t *testing.T) {
 		})
 	}
 }
+
+func TestChunkBy(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		Name           string
+		ItemsInput     []string
+		ChunkSizeInput int
+		Expected       [][]string
+	}{
+		{
+			Name:           "empty",
+			ItemsInput:     []string{},
+			ChunkSizeInput: 1,
+			Expected:       [][]string{},
+		},
+		{
+			Name: "chunk size == 0",
+			ItemsInput: []string{
+				"a", "b", "c",
+			},
+			ChunkSizeInput: 0,
+			Expected: [][]string{
+				{"a", "b", "c"},
+			},
+		},
+		{
+			Name: "chunk size < 0",
+			ItemsInput: []string{
+				"a", "b", "c",
+			},
+			ChunkSizeInput: -1,
+			Expected: [][]string{
+				{"a", "b", "c"},
+			},
+		},
+		{
+			Name: "chunk size > 0",
+			ItemsInput: []string{
+				"a", "b", "c",
+			},
+			ChunkSizeInput: 1,
+			Expected: [][]string{
+				{"a"},
+				{"b"},
+				{"c"},
+			},
+		},
+		{
+			Name: "leftovers",
+			ItemsInput: []string{
+				"a", "b", "c",
+			},
+			ChunkSizeInput: 2,
+			Expected: [][]string{
+				{"a", "b"},
+				{"c"},
+			},
+		},
+	}
+	for _, tc := range tt {
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+			var actual [][]string
+			require.NotPanics(t, func() {
+				actual = ChunkBy(tc.ItemsInput, tc.ChunkSizeInput)
+			})
+			assert.Equal(t, tc.Expected, actual)
+		})
+	}
+}
