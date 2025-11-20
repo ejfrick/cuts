@@ -1,6 +1,6 @@
 module github.com/ejfrick/cuts/stringsnap
 
-go 1.21
+go 1.24
 
 require (
 	github.com/junegunn/fzf v0.0.0-20240602000152-3ee1fc203406
