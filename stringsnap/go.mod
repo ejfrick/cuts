@@ -3,7 +3,7 @@ module github.com/ejfrick/cuts/stringsnap
 go 1.24
 
 require (
-	github.com/junegunn/fzf v0.0.0-20240602000152-3ee1fc203406
+	github.com/junegunn/fzf v0.73.1
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/schollz/closestmatch v2.1.0+incompatible
 	github.com/stretchr/testify v1.9.0
@@ -12,7 +12,8 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/junegunn/go-shellwords v0.0.0-20250127100254-2aa3b3277741 // indirect
+	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/nxadm/tail v1.4.11 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.38.2 // indirect
